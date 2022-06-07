@@ -4,13 +4,24 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "build": "vue-cli-service build --modern",
+    "lint": "vue-cli-service lint",
+    "pub": "publicPath=/webdrop npm run build && node publish"
   },
   "dependencies": {
+    "gh-pages": "^4.0.0",
     "core-js": "^3.8.3",
+    "crypto-browserify": "^3.12.0",
+    "filereader-stream": "^2.0.0",
+    "nkn-sdk": "^1.2.5",
+    "process": "^0.11.10",
+    "qrcode.vue": "^3.3.3",
+    "stream-browserify": "^3.0.0",
+    "streamsaver": "^2.0.3",
     "vue": "^3.2.13",
-    "vue-router": "^4.0.3"
+    "vue-router": "^4.0.3",
+    "web-streams-node": "^0.4.0",
+    "web-streams-polyfill": "^2.0.6"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",
