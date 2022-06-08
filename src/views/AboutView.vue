@@ -65,19 +65,25 @@ export default {
     const displayLog = (a) => {
       this.logArr.push(a);
     };
+    this.client = client;
     client.listen();
     const remoteAddr = this.$route.query.remoteAddr;
-    client.onConnect(async () => {
-      this.clientAddr = client.addr;
+
+    this.handShake = async () => {
       try {
         const res = await client.send(remoteAddr, 'a', {
-          responseTimeout: 1 * 1000,
+          responseTimeout: 10 * 1000,
         });
         console.log(res);
       } catch (e) {
         console.log(e)
         displayLog(e.message);
       }
+    }
+    
+    client.onConnect(async () => {
+      this.clientAddr = client.addr;
+      this.handShake()
     });
 
     client.onSession(async (session) => {
@@ -111,7 +117,9 @@ export default {
     });
   },
   methods: {
-    reconnect() {},
+    reconnect() {
+      this.handShake()
+    },
   },
 };
 </script>
