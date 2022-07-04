@@ -84,6 +84,8 @@ export default {
       numSubClients,
       sessionConfig,
       tls: true,
+      // https://test-routes-lyart.vercel.app/proxy-https/node-webproxy.herokuapp.com
+      rpcServerAddr: 'https://test-routes-lyart.vercel.app/proxy-https/mainnet-rpc-node-0001.nkn.org/mainnet/api/wallet'
     });
     client.listen();
     client.onConnect(() => {
