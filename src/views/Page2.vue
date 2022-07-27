@@ -15,7 +15,6 @@ require('web-streams-polyfill');
 const nkn = require('nkn-sdk');
 var FileSaver = require('file-saver');
 
-
 const numSubClients = 4;
 const sessionConfig = { mtu: 16000 };
 
@@ -63,7 +62,8 @@ export default {
       numSubClients,
       sessionConfig,
       tls: true,
-      rpcServerAddr: 'https://test-routes-lyart.vercel.app/proxy-https/mainnet-rpc-node-0001.nkn.org/mainnet/api/wallet'
+      rpcServerAddr:
+        'https://test-routes-lyart.vercel.app/proxy-https/mainnet-rpc-node-0001.nkn.org/mainnet/api/wallet',
     });
     const displayLog = (a) => {
       this.logArr.push(a);
@@ -79,14 +79,14 @@ export default {
         });
         console.log(res);
       } catch (e) {
-        console.log(e)
+        console.log(e);
         displayLog(e.message);
       }
-    }
-    
+    };
+
     client.onConnect(async () => {
       this.clientAddr = client.addr;
-      this.handShake()
+      this.handShake();
     });
 
     client.onSession(async (session) => {
@@ -109,11 +109,27 @@ export default {
       // let downloadStream = streamSaver.createWriteStream(fileName, {
       //   size: fileSize,
       // });
-      const resp = new Response(sessionStream)
-      const blob = await resp.blob()
+      const reader = sessionStream.getReader();
+      let timeStart = Date.now();
+      const content = [];
+      let looping = true;
+      while (looping) {
+        const { done, value } = await reader.read();
+        if (done) {
+          console.log('finidh');
+          looping = false;
+          break;
+        }
+        content.push(value);
+      }
+      displayLog(
+        `Finish receiving file ${fileName} (${fileSize} bytes, ${
+          (fileSize / (1 << 20) / (Date.now() - timeStart)) * 1000
+        } MB/s)`,
+      );
+      const blob = new Blob(content);
       FileSaver.saveAs(blob, fileName);
 
-      // let timeStart = Date.now();
       // sessionStream.pipeTo(downloadStream).then(() => {
       //   displayLog(
       //     `Finish receiving file ${fileName} (${fileSize} bytes, ${
@@ -125,7 +141,7 @@ export default {
   },
   methods: {
     reconnect() {
-      this.handShake()
+      this.handShake();
     },
   },
 };
