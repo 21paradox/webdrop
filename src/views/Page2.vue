@@ -11,8 +11,10 @@
 
 <script>
 require('web-streams-polyfill');
-const streamSaver = require('streamsaver');
+// const streamSaver = require('streamsaver');
 const nkn = require('nkn-sdk');
+var FileSaver = require('file-saver');
+
 
 const numSubClients = 4;
 const sessionConfig = { mtu: 16000 };
@@ -61,6 +63,7 @@ export default {
       numSubClients,
       sessionConfig,
       tls: true,
+      rpcServerAddr: 'https://test-routes-lyart.vercel.app/proxy-https/mainnet-rpc-node-0001.nkn.org/mainnet/api/wallet'
     });
     const displayLog = (a) => {
       this.logArr.push(a);
@@ -103,17 +106,21 @@ export default {
       );
 
       let sessionStream = session.getReadableStream();
-      let downloadStream = streamSaver.createWriteStream(fileName, {
-        size: fileSize,
-      });
-      let timeStart = Date.now();
-      sessionStream.pipeTo(downloadStream).then(() => {
-        displayLog(
-          `Finish receiving file ${fileName} (${fileSize} bytes, ${
-            (fileSize / (1 << 20) / (Date.now() - timeStart)) * 1000
-          } MB/s)`,
-        );
-      }, console.error);
+      // let downloadStream = streamSaver.createWriteStream(fileName, {
+      //   size: fileSize,
+      // });
+      const resp = new Response(sessionStream)
+      const blob = await resp.blob()
+      FileSaver.saveAs(blob, fileName);
+
+      // let timeStart = Date.now();
+      // sessionStream.pipeTo(downloadStream).then(() => {
+      //   displayLog(
+      //     `Finish receiving file ${fileName} (${fileSize} bytes, ${
+      //       (fileSize / (1 << 20) / (Date.now() - timeStart)) * 1000
+      //     } MB/s)`,
+      //   );
+      // }, console.error);
     });
   },
   methods: {

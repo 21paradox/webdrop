@@ -1,7 +1,12 @@
 <template>
   <div class="hello">
-    <h1>Client Addr: {{ clientAddr }}</h1>
+    <h1>Page id: {{ clientAddr }}</h1>
     <input id="file-input" type="file" @change="updateFile" />
+    <!-- <select>
+      <option>123123</option>
+      <option>123123</option>
+    </select> -->
+    <br />
 
     <button @click="genlink" v-show="clientAddr">generate link</button>
     <br />
@@ -19,7 +24,6 @@
         {{log}}
     </li>
   </ul>
-
 </template>
 
 <script>
