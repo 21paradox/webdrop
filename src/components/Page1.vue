@@ -12,7 +12,7 @@
     <br />
     <br />
     <div>
-    <a href:="linkUrl" target="_blank">
+    <a :href="linkUrl" target="_blank">
      {{ linkUrl }}
     </a>
    
