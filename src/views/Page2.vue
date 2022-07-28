@@ -11,9 +11,10 @@
 
 <script>
 require('web-streams-polyfill');
-// const streamSaver = require('streamsaver');
+const streamSaver = require('streamsaver');
 const nkn = require('nkn-sdk');
-var FileSaver = require('file-saver');
+streamSaver.mitm =  window.location.origin + '/mitm.html'
+// var FileSaver = require('file-saver');
 
 const numSubClients = 4;
 const sessionConfig = { mtu: 16000 };
@@ -106,37 +107,37 @@ export default {
       );
 
       let sessionStream = session.getReadableStream();
-      // let downloadStream = streamSaver.createWriteStream(fileName, {
-      //   size: fileSize,
-      // });
-      const reader = sessionStream.getReader();
+      let downloadStream = streamSaver.createWriteStream(fileName, {
+        size: fileSize,
+      });
+      // const reader = sessionStream.getReader();
       let timeStart = Date.now();
-      const content = [];
-      let looping = true;
-      while (looping) {
-        const { done, value } = await reader.read();
-        if (done) {
-          console.log('finidh');
-          looping = false;
-          break;
-        }
-        content.push(value);
-      }
-      displayLog(
-        `Finish receiving file ${fileName} (${fileSize} bytes, ${
-          (fileSize / (1 << 20) / (Date.now() - timeStart)) * 1000
-        } MB/s)`,
-      );
-      const blob = new Blob(content);
-      FileSaver.saveAs(blob, fileName);
+      // const content = [];
+      // let looping = true;
+      // while (looping) {
+      //   const { done, value } = await reader.read();
+      //   if (done) {
+      //     console.log('finidh');
+      //     looping = false;
+      //     break;
+      //   }
+      //   content.push(value);
+      // }
+      // displayLog(
+      //   `Finish receiving file ${fileName} (${fileSize} bytes, ${
+      //     (fileSize / (1 << 20) / (Date.now() - timeStart)) * 1000
+      //   } MB/s)`,
+      // );
+      // const blob = new Blob(content);
+      // FileSaver.saveAs(blob, fileName);
 
-      // sessionStream.pipeTo(downloadStream).then(() => {
-      //   displayLog(
-      //     `Finish receiving file ${fileName} (${fileSize} bytes, ${
-      //       (fileSize / (1 << 20) / (Date.now() - timeStart)) * 1000
-      //     } MB/s)`,
-      //   );
-      // }, console.error);
+      sessionStream.pipeTo(downloadStream).then(() => {
+        displayLog(
+          `Finish receiving file ${fileName} (${fileSize} bytes, ${
+            (fileSize / (1 << 20) / (Date.now() - timeStart)) * 1000
+          } MB/s)`,
+        );
+      }, console.error);
     });
   },
   methods: {
